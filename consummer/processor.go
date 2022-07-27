@@ -11,14 +11,8 @@ import (
 	"time"
 )
 
-/*
-todo 同步生产者生产确认非常慢.
-*/
-
-// DelayResetErr 自定义错误.  不是错误. 延迟时重置 Session
+// DelayResetErr Delay, reset session
 var DelayResetErr = errors.New("Delayed resetting session. ")
-
-var RepeatedStartErr = errors.New("The processor has been started. ")
 
 // Processor 处理器
 type Processor struct {
