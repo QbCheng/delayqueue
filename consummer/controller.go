@@ -2,7 +2,7 @@ package consummer
 
 import (
 	"context"
-	"kafka-study/delayqueue/logger"
+	"delayqueue/logger"
 	"sync"
 	"time"
 )
