@@ -33,7 +33,6 @@ func main() {
 		panic(err)
 	}
 
-	// 创建一个1分钟的延迟主题
 	dpProducer, err := producer.NewDQProducer("testDp", testDelayQueue, testNet)
 	if err != nil {
 		panic(err)

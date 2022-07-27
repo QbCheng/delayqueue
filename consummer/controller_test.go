@@ -9,9 +9,6 @@ import (
 
 var testNet = []string{"192.168.31.202:9092"}
 
-/*
-需要启动的队列
-*/
 var testDelayQueue = []time.Duration{
 	15 * time.Second,
 	30 * time.Second,

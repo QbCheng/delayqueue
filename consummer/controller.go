@@ -14,14 +14,14 @@ type option struct {
 	timezone string
 }
 
-// WithLogger 日志
+// WithLogger Setting the Log Interface
 func WithLogger(logger logger.Logger) Options {
 	return func(rm *Controller) {
 		rm.option.logger = logger
 	}
 }
 
-// WithTimezone 设置时区
+// WithTimezone Set the timezone
 func WithTimezone(timezone string) Options {
 	return func(rm *Controller) {
 		rm.option.timezone = timezone
@@ -41,7 +41,7 @@ type Controller struct {
 	option option
 }
 
-// NewController 创建控制器
+// NewController Create a controller
 func NewController(name string, addr []string, delayTime []time.Duration, options ...Options) (*Controller, error) {
 	ret := &Controller{}
 	ret.name = name
@@ -58,13 +58,12 @@ func NewController(name string, addr []string, delayTime []time.Duration, option
 		options[i](ret)
 	}
 
-	// 创建 kafka 消费者
-	//var err error
-	//// 初始化时区
-	//time.Local, err = time.LoadLocation(ret.option.timezone)
-	//if err != nil {
-	//	return nil, err
-	//}
+	var err error
+
+	time.Local, err = time.LoadLocation(ret.option.timezone)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, v := range delayTime {
 		ret.processor[v] = nil
@@ -73,16 +72,16 @@ func NewController(name string, addr []string, delayTime []time.Duration, option
 	return ret, nil
 }
 
-// Log 日志
+// Log Controller Logs
 func (c *Controller) Log(layout string, data ...interface{}) {
 	c.option.logger.Print("Controller : "+layout, data...)
 }
 
+// Run Start consuming delayed tasks
 func (c *Controller) Run(ctx context.Context) error {
 	var child context.Context
 	child, c.close = context.WithCancel(ctx)
 
-	// 启动处理程序
 	for delayTime := range c.processor {
 		var err error
 		c.processor[delayTime], err = NewProcessor(c.addr, c.name, delayTime, c.option.logger)
@@ -95,7 +94,7 @@ func (c *Controller) Run(ctx context.Context) error {
 	return nil
 }
 
-// Close 安全关闭
+// Close safety shutdown
 func (c *Controller) Close() bool {
 	// 关闭
 	c.close()

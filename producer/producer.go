@@ -21,14 +21,14 @@ type option struct {
 	timezone string
 }
 
-// WithLogger 日志
+// WithLogger Setting the Log Interface
 func WithLogger(logger logger.Logger) Options {
 	return func(rm *DQProducer) {
 		rm.option.logger = logger
 	}
 }
 
-// WithTimezone 设置时区
+// WithTimezone Set the timezone
 func WithTimezone(timezone string) Options {
 	return func(rm *DQProducer) {
 		rm.option.timezone = timezone
@@ -37,12 +37,12 @@ func WithTimezone(timezone string) Options {
 
 type DQProducer struct {
 	name          string
-	registerTopic map[time.Duration]string // 注册的主题
+	registerTopic map[time.Duration]string // registered topics
 	sarama.SyncProducer
 	option option
 }
 
-// NewDQProducer 创建一个生产者
+// NewDQProducer create a producer
 func NewDQProducer(name string, registerDelay []time.Duration, addr []string, options ...Options) (*DQProducer, error) {
 	if len(registerDelay) == 0 {
 		return nil, ErrRegisteredDelayQueueNotEmpty
@@ -56,7 +56,7 @@ func NewDQProducer(name string, registerDelay []time.Duration, addr []string, op
 
 	ret.option = option{
 		logger:   nil,
-		timezone: "UTC", // 默认是标准时区
+		timezone: "UTC",
 	}
 
 	for i := range options {
@@ -67,26 +67,25 @@ func NewDQProducer(name string, registerDelay []time.Duration, addr []string, op
 	config := sarama.NewConfig()
 	config.Version = sarama.V2_8_0_0
 	config.ClientID = DQProducerClientId
-	config.Producer.RequiredAcks = sarama.WaitForAll // 等待所有的确认, 防止消息丢失
+	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Return.Successes = true
 	ret.SyncProducer, err = sarama.NewSyncProducer(addr, config)
 	if err != nil {
 		return nil, err
 	}
 
-	//// 初始化时区
-	//time.Local, err = time.LoadLocation(ret.option.timezone)
-	//if err != nil {
-	//	return nil, err
-	//}
+	time.Local, err = time.LoadLocation(ret.option.timezone)
+	if err != nil {
+		return nil, err
+	}
 
 	return ret, nil
 }
 
-// Send 发送一条延时消息
-// 注意.
-// 延迟时间必须是已经注册的.
-// 注册延迟时间需要使用 库中的消费者指定的一致. 否则将不会被消费
+// Send a delay message
+// note.
+// 		The delay time must be registered.
+// 		Registered delay messages must be consumed.
 func (s *DQProducer) Send(delayTime time.Duration, payload string, processTopic string) error {
 	topic := s.RegisterTopic(delayTime)
 	if len(topic) == 0 {
@@ -104,7 +103,7 @@ func (s *DQProducer) Send(delayTime time.Duration, payload string, processTopic 
 	return nil
 }
 
-// RegisterTopic 获取注册的延时消息的主题.
+// RegisterTopic Get topic by delay time.
 func (s *DQProducer) RegisterTopic(delayTime time.Duration) string {
 	if topic, ok := s.registerTopic[delayTime]; ok {
 		return topic

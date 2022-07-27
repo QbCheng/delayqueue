@@ -9,13 +9,7 @@ const (
 	TimeLayoutNano = "2006-01-02 15:04:05.999999999"
 )
 
-/*
-特别注意:
-	因为存在时间问题, 需要注意不同服务器之间的时区, 和时间差.
-	需要对所有的服务器进行一个时间的同步校准, 否则会有较大的偏差
-*/
-
-// DpPayload 延迟队列数据
+// DpPayload Delay queue payload
 type DpPayload struct {
 	Deadline     string `json:"deadline"`      // 最后期限
 	Payload      string `json:"payload"`       // 真实负载
@@ -27,9 +21,9 @@ func LoadPayload(payload []byte) (res DpPayload, err error) {
 	return
 }
 
-// WaitTime 获取需要等待的时间.
-// 大于0需要等待
-// 小于或者等于0, 不需要等待
+// WaitTime Get the time to wait.
+// > 0 need to wait
+// <= 0 no need to wait
 func (p DpPayload) WaitTime() (time.Duration, error) {
 	deadline, err := time.ParseInLocation(TimeLayoutNano, p.Deadline, time.Local)
 	if err != nil {
@@ -38,12 +32,12 @@ func (p DpPayload) WaitTime() (time.Duration, error) {
 	return deadline.Sub(time.Now()), nil
 }
 
-// GetProcessTopic 获取实际的处理 Topic
+// GetProcessTopic Get the actual processing Topic
 func (p DpPayload) GetProcessTopic() string {
 	return p.ProcessTopic
 }
 
-// GetPayload 获得延迟消息的有效负载
+// GetPayload Get payload of delayed message
 func (p DpPayload) GetPayload() string {
 	return p.Payload
 }
