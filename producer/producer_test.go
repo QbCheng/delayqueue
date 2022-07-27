@@ -33,8 +33,7 @@ func TestNewDQProducer(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			for j := 0; j < 100; j++ {
-				err = producer.Send(30*time.Second, "hell World", "testTopic")
-				err = producer.Send(15*time.Second, "hell World", "testTopic")
+				err = producer.Send(10*time.Minute, "hell World", "testTopic")
 				err = producer.Send(60*time.Second, "hell World", "testTopic")
 				assert.NoError(t, err)
 			}

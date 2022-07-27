@@ -59,12 +59,12 @@ func NewController(name string, addr []string, delayTime []time.Duration, option
 	}
 
 	// 创建 kafka 消费者
-	var err error
-	// 初始化时区
-	time.Local, err = time.LoadLocation(ret.option.timezone)
-	if err != nil {
-		return nil, err
-	}
+	//var err error
+	//// 初始化时区
+	//time.Local, err = time.LoadLocation(ret.option.timezone)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	for _, v := range delayTime {
 		ret.processor[v] = nil

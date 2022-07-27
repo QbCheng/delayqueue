@@ -29,6 +29,6 @@ func TestController(t *testing.T) {
 	assert.NoError(t, err)
 	err = dpQueue.Run(context.Background())
 	assert.NoError(t, err)
-	time.Sleep(time.Minute * 3)
+	time.Sleep(time.Minute * 11)
 	dpQueue.Close()
 }

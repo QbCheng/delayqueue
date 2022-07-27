@@ -1,9 +1,3 @@
-# delayqueue
-Delay queues that depend on Kafka
-
-## Example
-
-```go
 package main
 
 import (
@@ -62,5 +56,3 @@ func main() {
 	dpConsumer.Close()
 	_ = dpProducer.Close()
 }
-
-```

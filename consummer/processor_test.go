@@ -2,8 +2,8 @@ package consummer
 
 import (
 	"context"
+	"delayqueue/logger"
 	"github.com/stretchr/testify/assert"
-	"kafka-study/delayqueue/logger"
 	"sync"
 	"testing"
 	"time"

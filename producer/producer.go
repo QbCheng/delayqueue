@@ -36,7 +36,6 @@ func WithTimezone(timezone string) Options {
 }
 
 type DQProducer struct {
-	delayTime     time.Duration // 延迟的时间
 	name          string
 	registerTopic map[time.Duration]string // 注册的主题
 	sarama.SyncProducer
@@ -75,11 +74,11 @@ func NewDQProducer(name string, registerDelay []time.Duration, addr []string, op
 		return nil, err
 	}
 
-	// 初始化时区
-	time.Local, err = time.LoadLocation(ret.option.timezone)
-	if err != nil {
-		return nil, err
-	}
+	//// 初始化时区
+	//time.Local, err = time.LoadLocation(ret.option.timezone)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	return ret, nil
 }
@@ -94,7 +93,7 @@ func (s *DQProducer) Send(delayTime time.Duration, payload string, processTopic 
 		return ErrDelayTimeNotRegister
 	}
 	msg := &sarama.ProducerMessage{Topic: topic, Value: dpPayload.DpPayload{
-		Deadline:     time.Now().Add(s.delayTime).Format(dpPayload.TimeLayoutNano),
+		Deadline:     time.Now().Add(delayTime).Format(dpPayload.TimeLayoutNano),
 		Payload:      payload,
 		ProcessTopic: processTopic,
 	}}

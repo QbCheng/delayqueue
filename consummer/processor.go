@@ -2,11 +2,11 @@ package consummer
 
 import (
 	"context"
+	"delayqueue/logger"
+	dpPayload "delayqueue/payload"
 	"errors"
 	"fmt"
 	"github.com/Shopify/sarama"
-	"kafka-study/delayqueue/logger"
-	dpPayload "kafka-study/delayqueue/payload"
 	"sync"
 	"time"
 )
