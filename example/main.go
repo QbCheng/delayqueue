@@ -24,7 +24,7 @@ var testDelayQueue = []time.Duration{
 	6 * time.Hour,
 }
 
-var testNet = []string{"192.168.31.202:9092"}
+var testNet = []string{"192.168.1.133:9092"}
 
 func main() {
 	dpConsumer, err := consummer.NewController("testDp", testNet, testDelayQueue)
@@ -90,10 +90,6 @@ func (h *RealTopicHandle) Run(ctx context.Context, topics []string, wg *sync.Wai
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	config.Consumer.Offsets.Initial = sarama.OffsetOldest
-
-	// 如果启用，成功传递的消息将在成功通道返回(默认禁用).
-	config.Producer.Return.Successes = true
-
 	group, err := sarama.NewConsumerGroup(testNet, "RealTopic-group", config)
 	if err != nil {
 		panic(err)
