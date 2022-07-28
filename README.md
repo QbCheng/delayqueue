@@ -8,8 +8,8 @@ package main
 
 import (
 	"context"
-	"delayqueue/consummer"
-	"delayqueue/producer"
+	"github.com/QbCheng/delayqueue/consummer"
+	"github.com/QbCheng/delayqueue/producer"
 	"sync"
 	"time"
 )

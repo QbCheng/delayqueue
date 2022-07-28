@@ -2,10 +2,10 @@ package consummer
 
 import (
 	"context"
-	"delayqueue/logger"
-	dpPayload "delayqueue/payload"
 	"errors"
 	"fmt"
+	"github.com/QbCheng/delayqueue/logger"
+	dpPayload "github.com/QbCheng/delayqueue/payload"
 	"github.com/Shopify/sarama"
 	"sync"
 	"time"
@@ -14,7 +14,7 @@ import (
 // DelayResetErr Delay, reset session
 var DelayResetErr = errors.New("Delayed resetting session. ")
 
-// Processor 处理器
+// Processor processor
 type Processor struct {
 	cg         sarama.ConsumerGroup // Consumer group for delayed messages.
 	delayTopic string               // Delayed Queue Topic

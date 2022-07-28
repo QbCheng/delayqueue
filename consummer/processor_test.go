@@ -2,7 +2,7 @@ package consummer
 
 import (
 	"context"
-	"delayqueue/logger"
+	"github.com/QbCheng/delayqueue/logger"
 	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"

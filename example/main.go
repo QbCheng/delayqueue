@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"delayqueue/consummer"
-	"delayqueue/producer"
 	"fmt"
+	"github.com/QbCheng/delayqueue/consummer"
+	"github.com/QbCheng/delayqueue/producer"
 	"github.com/Shopify/sarama"
 	"log"
 	"sync"

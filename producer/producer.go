@@ -1,10 +1,10 @@
 package producer
 
 import (
-	"delayqueue/logger"
-	dpPayload "delayqueue/payload"
 	"errors"
 	"fmt"
+	"github.com/QbCheng/delayqueue/logger"
+	dpPayload "github.com/QbCheng/delayqueue/payload"
 	"github.com/Shopify/sarama"
 	"time"
 )

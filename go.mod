@@ -1,4 +1,4 @@
-module delayqueue
+module github.com/QbCheng/delayqueue
 
 go 1.17
 
