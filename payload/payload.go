@@ -11,9 +11,9 @@ const (
 
 // DpPayload Delay queue payload
 type DpPayload struct {
-	Deadline     string `json:"deadline"`      // 最后期限
-	Payload      string `json:"payload"`       // 真实负载
-	ProcessTopic string `json:"process_topic"` // 到期之后放入的队列
+	Deadline     string `json:"deadline"`      // Deadline
+	Payload      string `json:"payload"`       // Real load
+	ProcessTopic string `json:"process_topic"` // Queue placed after expiration
 }
 
 func LoadPayload(payload []byte) (res DpPayload, err error) {
