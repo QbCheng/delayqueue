@@ -12,7 +12,7 @@ const (
 // DpPayload Delay queue payload
 type DpPayload struct {
 	Deadline     string `json:"deadline"`      // Deadline
-	Payload      string `json:"payload"`       // Real load
+	Payload      []byte `json:"payload"`       // Real load
 	ProcessTopic string `json:"process_topic"` // Queue placed after expiration
 }
 
@@ -38,7 +38,7 @@ func (p DpPayload) GetProcessTopic() string {
 }
 
 // GetPayload Get payload of delayed message
-func (p DpPayload) GetPayload() string {
+func (p DpPayload) GetPayload() []byte {
 	return p.Payload
 }
 

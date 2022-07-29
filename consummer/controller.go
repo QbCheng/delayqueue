@@ -51,7 +51,7 @@ func NewController(name string, addr []string, delayTime []time.Duration, option
 
 	ret.option = option{
 		logger:   logger.NewDefaultLog(),
-		timezone: "UTC", // 默认是标准时区
+		timezone: "UTC", // Default is UTC time zone
 	}
 
 	for i := range options {

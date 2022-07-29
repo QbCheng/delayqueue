@@ -86,7 +86,7 @@ func NewDQProducer(name string, registerDelay []time.Duration, addr []string, op
 // note.
 // 		The delay time must be registered.
 // 		Registered delay messages must be consumed.
-func (s *DQProducer) Send(delayTime time.Duration, payload string, processTopic string) error {
+func (s *DQProducer) Send(delayTime time.Duration, payload []byte, processTopic string) error {
 	topic := s.RegisterTopic(delayTime)
 	if len(topic) == 0 {
 		return ErrDelayTimeNotRegister

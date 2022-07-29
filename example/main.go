@@ -48,7 +48,7 @@ func main() {
 			defer wg.Done()
 			for j := 0; j < 100; j++ {
 				for _, delayTime := range testDelayQueue {
-					_ = dpProducer.Send(delayTime, "hell World", "testTopic")
+					_ = dpProducer.Send(delayTime, []byte("hell World"), "testTopic")
 				}
 			}
 		}()

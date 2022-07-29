@@ -121,7 +121,7 @@ func (h *Processor) ConsumeClaim(session sarama.ConsumerGroupSession, claim sara
 			h.waitPartition = msg.Partition
 			return nil
 		} else {
-			forwardMsg := &sarama.ProducerMessage{Topic: payload.GetProcessTopic(), Value: sarama.StringEncoder(payload.GetPayload())}
+			forwardMsg := &sarama.ProducerMessage{Topic: payload.GetProcessTopic(), Value: sarama.ByteEncoder(payload.GetPayload())}
 			_, _, err = h.forward.SendMessage(forwardMsg)
 			if err != nil {
 				session.ResetOffset(msg.Topic, msg.Partition, msg.Offset, "forward failure")

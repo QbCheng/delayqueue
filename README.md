@@ -8,8 +8,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/QbCheng/delayqueue/consummer"
 	"github.com/QbCheng/delayqueue/producer"
+	"github.com/Shopify/sarama"
+	"log"
 	"sync"
 	"time"
 )
@@ -27,7 +30,7 @@ var testDelayQueue = []time.Duration{
 	6 * time.Hour,
 }
 
-var testNet = []string{"192.168.31.202:9092"}
+var testNet = []string{"192.168.1.133:9092"}
 
 func main() {
 	dpConsumer, err := consummer.NewController("testDp", testNet, testDelayQueue)
@@ -51,15 +54,69 @@ func main() {
 			defer wg.Done()
 			for j := 0; j < 100; j++ {
 				for _, delayTime := range testDelayQueue {
-					_ = dpProducer.Send(delayTime, "hell World", "testTopic")
+					_ = dpProducer.Send(delayTime, []byte("hell World"), "testTopic")
 				}
 			}
 		}()
 	}
 
+	handle := RealTopicHandle{}
+	wg.Add(1)
+	ctx, cancel := context.WithCancel(context.Background())
+	go handle.Run(ctx, []string{"testTopic"}, wg)
+
 	time.Sleep(24 * time.Hour)
 	dpConsumer.Close()
+	cancel()
 	_ = dpProducer.Close()
+}
+
+type RealTopicHandle struct {
+}
+
+func (h RealTopicHandle) Setup(session sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h RealTopicHandle) Cleanup(_ sarama.ConsumerGroupSession) error {
+	return nil
+}
+
+func (h RealTopicHandle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	for msg := range claim.Messages() {
+		log.Printf("Message topic:%q partition:%d offset:%d\n", msg.Topic, msg.Partition, msg.Offset)
+		session.MarkMessage(msg, "")
+	}
+	return nil
+}
+
+func (h *RealTopicHandle) Run(ctx context.Context, topics []string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	log.SetFlags(log.Lshortfile | log.Ltime | log.Ldate)
+	config := sarama.NewConfig()
+	config.Consumer.Return.Errors = true
+	config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	group, err := sarama.NewConsumerGroup(testNet, "RealTopic-group", config)
+	if err != nil {
+		panic(err)
+	}
+	defer func() { _ = group.Close() }()
+
+	// Track errors
+	go func() {
+		for err = range group.Errors() {
+			log.Print("err : ", err.Error())
+		}
+	}()
+
+	for {
+		err = group.Consume(ctx, topics, h)
+		if err == nil {
+			return
+		} else {
+			fmt.Println(err)
+		}
+	}
 }
 
 ```
